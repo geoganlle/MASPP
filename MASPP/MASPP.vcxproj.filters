@@ -18,5 +18,25 @@
     <ClCompile Include="MASPP.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CAgent.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CBfs.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GridMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CAgent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CBfs.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GridMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@ std::string GenerateMap::GenerateMapName()
 		ss.clear();
 		_file.clear();
 		string_map_name.clear();
-		if (_mkdir("../map"));//std::cout <<"mkdir failes"<< std::endl;//目录已存在
+		if (_mkdir("../map"))std::cout <<"mkdir failes: Folder already exists"<< std::endl;//目录已存在
 		ss <<"../map/"<<int_dim_x << "x" << int_dim_y << "map" << fileindex<<".txt";
 		fileindex++;
 		ss >> string_map_name;
@@ -41,7 +41,7 @@ bool GenerateMap::RandGenerateMap(const int& maptype, const double& density)
 				std::swap(hashintmap[i], hashintmap[j]);
 				this->int_map[hashintmap[i] / int_dim_x ][hashintmap[i] % int_dim_x] = 1;
 			}else {
-				std::cout << "Log5" << std::endl;
+				//std::cout << "Log5" << std::endl;
 				throw new std::exception("Array overflow/underflow error");
 			}
 		}
@@ -54,7 +54,7 @@ bool GenerateMap::RandGenerateMap(const int& maptype, const double& density)
 	}
 	catch (const std::exception& e)
 	{
-		std::cout << "Log6" << std::endl;
+		//std::cout << "Log6" << std::endl;
 		std::cerr << e.what() << std::endl;
 		delete[] hashintmap;
 		return false;

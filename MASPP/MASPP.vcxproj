@@ -151,10 +151,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CAgent.cpp" />
+    <ClCompile Include="CBfs.cpp" />
     <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="MASPP.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CAgent.h" />
+    <ClInclude Include="CBfs.h" />
     <ClInclude Include="GridMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
