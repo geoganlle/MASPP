@@ -41,7 +41,72 @@ struct stPoint {
 inline bool pointEquals(stPoint* p1, int i, int j) {
 	return (p1->x == i && p1->y == j);
 }
+
 enum eDirection{EAST,SOUTH,WEST,NORTH,EN,ES,WS,WN,WAIT};//9个方向
+/*得到反方向*/
+int reverse_dir(int dir) {
+	switch (dir) {
+	case EAST:
+		return WEST;
+	case SOUTH:
+		return NORTH;
+	case WEST:
+		return EAST;
+	case NORTH:
+		return SOUTH;
+	case EN:
+		return WS;
+	case ES:
+		return WN;
+	case WS:
+		return EN;
+	case WN:
+		return ES;
+	default:
+		return dir;
+	}
+}
+/*得到一个点某一方向的点*/
+stPoint getPoint_move_dir(const stPoint* from, int dir) {
+
+	/*						北
+			y - 1, x - 1	y - 1, x	y - 1, x + 1
+		西	y, x - 1		y, x		y, x + 1		东
+			y + 1, x - 1	y + 1, x	y + 1, x + 1
+							南
+	**/
+	
+	stPoint point(from->x, from->y);
+	switch (dir) {
+	case EAST:
+		point.x++; break;
+	case SOUTH:
+		point.y++; break;
+	case WEST:
+		point.x--; break;
+	case NORTH:
+		point.y--; break;
+	case EN:
+		point.x++;
+		point.y--;
+		break;
+	case ES:
+		point.x++;
+		point.y++;
+		break;
+	case WS:
+		point.x--;
+		point.y--;
+		break;
+	case WN:
+		point.x--;
+		point.y++;
+		break;
+	default:
+		return point;
+	}
+	return point;
+}
 
 class CGridMap
 {
@@ -53,7 +118,7 @@ public:
 	void printGridMap();
 	bool* getNeighbor(const stPoint& pos) const;//pos周围8个位置是否有点
 	bool hasNode(const stPoint& pos)const;//pos位置是否有点
-	 
+	stPoint getDim();//得到地图尺寸
 	int hashpt(stPoint* p);//将地图中的一个坐标映射到成一位数组的下标
 	stPoint unhash(int hash);//将一个数组下标映射成地图上的
 

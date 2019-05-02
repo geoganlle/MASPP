@@ -24,7 +24,10 @@
     <ClCompile Include="CBfs.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GridMap.cpp">
+    <ClCompile Include="CDistance.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CGridMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +38,10 @@
     <ClInclude Include="CBfs.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GridMap.h">
+    <ClInclude Include="CDistance.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CGridMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

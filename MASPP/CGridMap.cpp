@@ -51,6 +51,11 @@ inline bool CGridMap::hasNode(const stPoint& pos) const
 		&& map_boolpp[pos.x][pos.y]);
 }
 
+stPoint CGridMap::getDim()
+{
+	return stPoint(dimX_int,dimY_int);
+}
+
 int CGridMap::hashpt(stPoint* p)
 {
 	return (p->y*dimX_int + p->x);
