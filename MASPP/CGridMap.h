@@ -26,7 +26,6 @@ gridmap类 处理环境地图相关变量和方法
 Written by Geoganlle Goo
 Last change:2019.4.30
 **/
-
 #pragma once
 #include<iostream>
 #include<fstream>
@@ -44,6 +43,7 @@ inline bool pointEquals(stPoint* p1, int i, int j) {
 
 enum eDirection{EAST,SOUTH,WEST,NORTH,EN,ES,WS,WN,WAIT};//9个方向
 /*得到反方向*/
+inline
 int reverse_dir(int dir) {
 	switch (dir) {
 	case EAST:
@@ -67,6 +67,7 @@ int reverse_dir(int dir) {
 	}
 }
 /*得到一个点某一方向的点*/
+inline
 stPoint getPoint_move_dir(const stPoint* from, int dir) {
 
 	/*						北
@@ -128,4 +129,24 @@ public:
 	~CGridMap();
 	
 };
-
+inline bool CGridMap::hasNode(const stPoint& pos) const
+{
+	return (pos.x >= 0 && pos.x < dimX_int &&
+		pos.y >= 0 && pos.y < dimY_int
+		&& map_boolpp[pos.x][pos.y]);
+}
+inline
+stPoint CGridMap::getDim()
+{
+	return stPoint(dimX_int, dimY_int);
+}
+inline
+int CGridMap::hashpt(stPoint * p)
+{
+	return (p->y * dimX_int + p->x);
+}
+inline
+stPoint CGridMap::unhash(int hash)
+{
+	return stPoint(hash / dimX_int, hash % dimX_int);
+}

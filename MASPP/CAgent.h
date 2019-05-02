@@ -1,5 +1,5 @@
 #pragma once
-#include"GridMap.h"
+#include"CGridMap.h"
 class CAgent
 {
 	int id_int;

@@ -1,4 +1,4 @@
-#include "GridMap.h"
+#include "CGridMap.h"
 #include <vector>
 #include <string>
 
@@ -15,12 +15,12 @@ void CGridMap::printGridMap()
 	}
 	std::cout << std::endl;
 }
-
+/*0false 1true*/
 bool* CGridMap::getNeighbor(const stPoint& pos) const
 {
 	int x = pos.x;
 	int y = pos.y;
-	if (x < 0 || x >= dimX_int || y < 0 || y > dimY_int)
+	if (x < 0 || x >= dimX_int || y < 0 || y >= dimY_int)
 		return NULL;
 
 	bool* neighbor = new bool[DIM];
@@ -44,27 +44,7 @@ bool* CGridMap::getNeighbor(const stPoint& pos) const
 	return neighbor;
 }
 
-inline bool CGridMap::hasNode(const stPoint& pos) const
-{
-	return (pos.x >= 0 && pos.x < dimX_int && 
-		pos.y >= 0 && pos.y < dimY_int 
-		&& map_boolpp[pos.x][pos.y]);
-}
 
-stPoint CGridMap::getDim()
-{
-	return stPoint(dimX_int,dimY_int);
-}
-
-int CGridMap::hashpt(stPoint* p)
-{
-	return (p->y*dimX_int + p->x);
-}
-
-stPoint CGridMap::unhash(int hash)
-{
-	return stPoint(hash / dimX_int, hash % dimX_int);
-}
 
 CGridMap::CGridMap()
 {
@@ -126,7 +106,7 @@ CGridMap::CGridMap(int dimX, int dimY, stPoint** blocklist, int listlen)
 
 CGridMap::~CGridMap()
 {
-	std::cout<<"Class CGridMap has been deconstructed"<<std::endl;
+	//std::cout<<"Class CGridMap has been deconstructed"<<std::endl;
 	for (int i = 0; i < dimY_int; i++) {
 		delete[] map_boolpp[i];
 	}

@@ -34,3 +34,8 @@ public:
 	int getsolncost_int();
 };
 
+inline
+int CBfs::getsolncost_int()
+{
+	return solncost_int;
+}
