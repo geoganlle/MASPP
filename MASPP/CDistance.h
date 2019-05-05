@@ -1,21 +1,18 @@
+/*
+1.配合CBfs.h广度优先遍历计算点之间的距离
+2.
+**/
 #pragma once
 #include "CBfs.h"
 #include "CGridMap.h"
 #include <direct.h>
-#include <unordered_map>
-
-struct Key {
-	stPoint init_stPoint;
-	stPoint goal_stPoint;
-	Key(stPoint i, stPoint g) : init_stPoint(i), goal_stPoint(g) {};
-};
 
 class CDistance
 {
 	CGridMap* gridmap_CGridMap;
 	int** table_intpp;//任意点间的距离表
 
-	void populate();//初始化table_intpp
+	void populate();//初始化table_intpp 用广度优先遍历的方式
 	void search(stPoint& o, stPoint& d);
 
 public:

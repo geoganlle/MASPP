@@ -156,12 +156,14 @@
     <ClCompile Include="CDistance.cpp" />
     <ClCompile Include="CGridMap.cpp" />
     <ClCompile Include="MASPP.cpp" />
+    <ClCompile Include="CState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAgent.h" />
     <ClInclude Include="CBfs.h" />
     <ClInclude Include="CDistance.h" />
     <ClInclude Include="CGridMap.h" />
+    <ClInclude Include="CState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

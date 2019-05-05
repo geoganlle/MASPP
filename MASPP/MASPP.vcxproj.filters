@@ -30,6 +30,9 @@
     <ClCompile Include="CAgent.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CState.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBfs.h">
@@ -42,6 +45,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CAgent.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CState.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
