@@ -1,6 +1,5 @@
 /*
-1.配合CBfs.h广度优先遍历计算点之间的距离
-2.
+配合CBfs.h广度优先遍历计算点之间的距离
 **/
 #pragma once
 #include "CBfs.h"

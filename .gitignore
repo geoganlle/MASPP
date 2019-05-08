@@ -341,3 +341,5 @@ healthchecksdb
 /agents
 /grids
 /tests
+/map
+/test
