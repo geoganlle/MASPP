@@ -155,6 +155,7 @@
     <ClCompile Include="CBfs.cpp" />
     <ClCompile Include="CDistance.cpp" />
     <ClCompile Include="CGridMap.cpp" />
+    <ClCompile Include="CSearch.cpp" />
     <ClCompile Include="MASPP.cpp" />
     <ClCompile Include="CState.cpp" />
   </ItemGroup>
@@ -163,6 +164,7 @@
     <ClInclude Include="CBfs.h" />
     <ClInclude Include="CDistance.h" />
     <ClInclude Include="CGridMap.h" />
+    <ClInclude Include="CSearch.h" />
     <ClInclude Include="CState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

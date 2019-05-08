@@ -32,10 +32,10 @@ CBfs::~CBfs()
 
 void CBfs::search()
 {
-	std::queue<stNode> node_queue;
-	node_queue.push(stNode(*orig_stPoint, WAIT, 0));
+	std::queue<stPointNode> node_queue;
+	node_queue.push(stPointNode(*orig_stPoint, WAIT, 0));
 	while (!node_queue.empty()) {
-		stNode curNode = node_queue.front();
+		stPointNode curNode = node_queue.front();
 		node_queue.pop();
 		if (curNode.p_stPoint.x == dest_stPoint->x && 
 			curNode.p_stPoint.y == dest_stPoint->y) {
@@ -53,7 +53,7 @@ void CBfs::search()
 				eighborhood && eighborhood[i]) {//eighborhood!=NULL 邻居点无障碍物
 				int to_parent_dir = reverse_dir(i);
 				int depth = curNode.depth_int + 1;
-				node_queue.push(stNode(child, to_parent_dir, depth));
+				node_queue.push(stPointNode(child, to_parent_dir, depth));
 				visited_boolp[hash] = true;	//初始化时默认是false
 			}
 		}

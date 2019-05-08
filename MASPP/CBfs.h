@@ -7,11 +7,11 @@
 #include <iostream>
 #include <queue>
 #include "CGridMap.h"
-struct stNode {
+struct stPointNode {
 	stPoint p_stPoint;
 	int dir_int;//父节点方向
 	int depth_int;//深度
-	stNode(stPoint c, int dir, int depth) : p_stPoint(c), dir_int(dir), depth_int(depth) { };
+	stPointNode(stPoint c, int dir, int depth) : p_stPoint(c), dir_int(dir), depth_int(depth) { };
 };
 
 class CBfs

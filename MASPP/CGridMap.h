@@ -42,6 +42,7 @@ inline bool pointEquals(stPoint* p1, int i, int j) {
 }
 
 enum eDirection{EAST,SOUTH,WEST,NORTH,EN,ES,WS,WN,WAIT};//9个方向
+
 /*得到反方向*/
 inline
 int reverse_dir(int dir) {
@@ -66,7 +67,8 @@ int reverse_dir(int dir) {
 		return dir;
 	}
 }
-/*得到一个点某一方向的点*/
+
+/*得到某一方向的点*/
 inline
 stPoint getPoint_move_dir(const stPoint* from, int dir) {
 
@@ -107,6 +109,72 @@ stPoint getPoint_move_dir(const stPoint* from, int dir) {
 		return point;
 	}
 	return point;
+}
+
+inline
+int get_direction(stPoint* from,stPoint* to) {
+	int dx, dy, diff;
+	if (!(from && to)) return -1;	// Error
+	dx = to->x - from->x;
+	dy = to->y - from->y;
+	diff = 3 * dy + dx;
+	/*	
+		dx = | -1	0	1 |	3 * dy = | -3  -3  -3 | 
+			 | -1	0	1 |			 |  0	0	0 |
+			 | -1	0	1 |		     |  3	3	3 |
+		3 * dy + dx = | -4	-3	-2 |	WN	N	EN
+					  | -1	 0	 1 |	W		E
+					  |  2	 3	 4 |	WS	S	ES
+	**/
+	switch (diff) {
+	case 4:
+		return ES;
+	case 3:
+		return SOUTH;
+	case 2:
+		return WS;
+	case 1:
+		return EAST;
+	case 0:
+		return WAIT;
+	case -1:
+		return WEST;
+	case -2:
+		return EN;
+	case -3:
+		return NORTH;
+	case -4:
+		return WN;
+	default:
+		return -1;
+	}
+
+}
+
+inline
+std::string dir_to_string(int dir) {
+	switch (dir) {
+	case NORTH:
+		return "North";
+	case SOUTH:
+		return "South";
+	case EAST:
+		return "East";
+	case WEST:
+		return "West";
+	case EN:
+		return "Northeast";
+	case WN:
+		return "Northwest";
+	case ES:
+		return "Southeast";
+	case WS:
+		return "Southwest";
+	case WAIT:
+		return "Wait";
+	default:
+		return "";
+	}
 }
 
 class CGridMap
