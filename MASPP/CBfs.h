@@ -1,5 +1,6 @@
 /*
-广度优先遍历
+program file No.2
+广度优先搜索
 计算地图中两点间的距离
 主要用于确认路径是否存在
 **/
@@ -7,35 +8,35 @@
 #include <iostream>
 #include <queue>
 #include "CGridMap.h"
-struct stPointNode {
+
+struct stPointBFS {
 	stPoint p_stPoint;
-	int dir_int;//父节点方向
+	int dir_int;//向父节点方向
 	int depth_int;//深度
-	stPointNode(stPoint c, int dir, int depth) : p_stPoint(c), dir_int(dir), depth_int(depth) { };
+	stPointBFS(stPoint c, int dir, int depth) : p_stPoint(c), dir_int(dir), depth_int(depth) { };
 };
 
 class CBfs
 {
-	int solncost_int;//消耗
+	int soln_cost_int;//消耗
 	CGridMap* gridmap_CGridMapp;//地图
 	stPoint dim_stPoint;//地图尺寸
 	stPoint* orig_stPoint;//起点
 	stPoint* dest_stPoint;//终点
 
-	bool* visited_boolp;
-	int len_int;
+	bool* visited_boolp;//用于广度优先遍历的数组，标记已访问过的点
+	int visited_length_int;//visited_boolp数组的长度
 
 public:
-	CBfs();
 	CBfs(stPoint* o,stPoint* d,CGridMap* g);
 	~CBfs();
 
 	void search();
-	int getsolncost_int();
+	int get_soln_cost_int();
 };
 
 inline
-int CBfs::getsolncost_int()
+int CBfs::get_soln_cost_int()
 {
-	return solncost_int;
+	return soln_cost_int;
 }

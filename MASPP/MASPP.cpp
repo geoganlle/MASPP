@@ -8,14 +8,21 @@
 using namespace std;
 
 bool mapftest(string testfile);
-stMapf run_mapf(string path_g, string path_a);
+stAgentSystem run_mapf(string path_g, string path_a);
 stPoint** readpos_agent(string pathname, int& n);
 bool chksolution(int init[], int goal[], int len, CGridMap* g);
+
 int main() {
-	//CGridMap g("../map/6x6map0.txt");
-	//CDistance * d=new CDistance(&g);
-	//d->printDistanceTable();
-	//cout << "Done" << endl;
+	//CGridMap g("../map/4x4map0.txt");
+	//CBfs* bfs = new CBfs(&stPoint(0,3),&stPoint(0,0),&g);
+	//int a = bfs->get_soln_cost_int();
+	//cout << a;
+	/*
+	CDistance* d = new CDistance(&g);
+	d->printDistanceTable();
+	d->~CDistance();
+	cout << "Done" << endl;
+	*/
 	mapftest("../tests/t6.test" );
 	cout << "Done" << endl;
 	return 0;
@@ -24,7 +31,7 @@ int main() {
 bool mapftest(string testfile) {
 	string line;
 	ifstream file(testfile);
-	int pos = 0, total = 0;	// Number of test instances
+	int pos = 0, total = 0;	//测试数量
 	double avg_exp = 0;
 	int max_exp = 0;
 	int min_exp = INT_MAX;
@@ -32,7 +39,7 @@ bool mapftest(string testfile) {
 	double avg_t = 0;
 	double min_t = numeric_limits<double>::infinity();
 
-	vector<stMapf> mapf_tests;
+	vector<stAgentSystem> mapf_tests;
 
 	if (!file.is_open()) return false;
 
@@ -47,9 +54,9 @@ bool mapftest(string testfile) {
 		cerr << "Beginning instance " << total << endl;
 		cout << "grid path= " + grid_path + "\t agent path= " + agent_path + "\n";
 
-		stMapf tmp = run_mapf(grid_path, agent_path);
+		stAgentSystem tmp = run_mapf(grid_path, agent_path);
 		mapf_tests.push_back(tmp);
-		if (tmp.solved)
+		if (tmp.canbesolved_bool)
 			pos++;
 
 		else cout << "Cannot solve instance " << total << endl;
@@ -64,31 +71,31 @@ bool mapftest(string testfile) {
 	int i = 0;
 	cerr << "Instance,Dim,k,Time,Collisions,Expansions,Cost\n";
 	for (auto it = mapf_tests.begin(); it != mapf_tests.end(); it++) {
-		if (it->solved) {
+		if (it->canbesolved_bool) {
 			cout << "Instance " << i++ << endl;
 			cout << "\tGrid x=" << it->dim.x << ", y=" << it->dim.y << endl;
 			cout << fixed;
-			cout << "\tNum agents = " << it->num_agents << endl;
+			cout << "\tNum agents = " << it->num_agents_int << endl;
 			cout << "\tTime = ";
-			cout << setprecision(8) << it->time << "s\n";
-			cout << "\tCollisions = " << it->collisions << endl;
-			cout << "\tNum expansions = " << it->num_exp << endl;
+			cout << setprecision(8) << it->time_timet << "s\n";
+			cout << "\tCollisions = " << it->num_collisions_int << endl;
+			cout << "\tNum expansions = " << it->num_expansions_int << endl;
 
-			min_t = (it->time < min_t) ? it->time : min_t;
-			max_t = (it->time > max_t) ? it->time : max_t;
-			min_exp = (it->num_exp < min_exp) ? it->num_exp : min_exp;
-			max_exp = (it->num_exp > max_exp) ? it->num_exp : max_exp;
-			avg_exp += it->num_exp;
-			avg_t += it->time;
+			min_t = (it->time_timet < min_t) ? it->time_timet : min_t;
+			max_t = (it->time_timet > max_t) ? it->time_timet : max_t;
+			min_exp = (it->num_expansions_int < min_exp) ? it->num_expansions_int : min_exp;
+			max_exp = (it->num_expansions_int > max_exp) ? it->num_expansions_int : max_exp;
+			avg_exp += it->num_expansions_int;
+			avg_t += it->time_timet;
 
 
 			// Use cerr to print csv formatted data
 			cerr << fixed;
 			cerr << setprecision(3);
 			cerr << i << "," << it->dim.x << "x" << it->dim.y << ",";
-			cerr << it->num_agents << "," << (double)it->time << ",";
-			cerr << it->collisions << "," << it->num_exp << ",";
-			cerr << it->cost << endl;
+			cerr << it->num_agents_int << "," << (double)it->time_timet << ",";
+			cerr << it->num_collisions_int << "," << it->num_expansions_int << ",";
+			cerr << it->system_cost_int << endl;
 		}
 	}
 
@@ -105,19 +112,19 @@ bool mapftest(string testfile) {
 
 	return true;
 }
-stMapf run_mapf(string path_g, string path_a) {
+stAgentSystem run_mapf(string path_g, string path_a) {
 
 	int num_agents = -1;
 	path_a = "../agents/" + path_a;
 	stPoint** states = readpos_agent(path_a, num_agents);
 	CGridMap grid("../grids/" + path_g);
 
-	stMapf info(num_agents, 0, 0, false, grid.getDim());
+	stAgentSystem info(num_agents,0, 0,0, 0, false, grid.getDim());
 
 	if (!chksolution((int*)states[0], (int*)states[1], num_agents, &grid))
 		return info;
 
-	Mapf m(num_agents, states[0], states[1], &grid);
+	CAgentSystem m(num_agents, states[0], states[1], &grid);
 
 	int res;
 	while (res = m.resolve_conflicts()) {
@@ -133,11 +140,11 @@ stMapf run_mapf(string path_g, string path_a) {
 	cout << fixed;
 	cout << "\tTotal Time " << setprecision(8) << m.get_time() << "s\n";
 
-	info.solved = true;
-	info.num_exp = m.num_expansions();
-	info.time = m.get_time();
-	info.collisions = m.get_collisions();
-	info.cost = m.cost();
+	info.canbesolved_bool = true;
+	info.num_expansions_int = m.num_expansions();
+	info.time_timet = m.get_time();
+	info.num_collisions_int = m.get_collisions();
+	info.system_cost_int = m.cost();
 
 	delete[] states[0];
 	delete[] states[1];
@@ -175,7 +182,7 @@ stPoint** readpos_agent(string pathname, int& n) {
 bool chksolution(int init[], int goal[], int len, CGridMap* g) {
 	for (int i = 0; i < len; i += 2) {
 		CBfs bfs((stPoint*)& init[i], (stPoint*)& goal[i], g);
-		if (bfs.getsolncost_int() > MAX_TOUR) return false;
+		if (bfs.get_soln_cost_int() > MAX_TOUR) return false;
 		cout << "Found path for " << i << endl;
 	}
 	cout << "Checked solutions OK\n";

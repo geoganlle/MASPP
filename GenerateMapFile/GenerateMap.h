@@ -17,7 +17,10 @@ private:
 
 	std::string GenerateMapName();//生成文件名
 public:
-	bool RandGenerateMap(const int& maptype= 0, const double& density = 0.4);//随机生成地图 //maptype 障碍物类型 0：点 1：图形 2：迷宫
+	/*随机生成地图
+	maptype 障碍物类型 0:点 1:图形 2:迷宫 
+	density: 可通行率 既无障碍物点的比率*/
+	bool RandGenerateMap(const int& maptype= 0, const double& density = 0.4);
 public:
 	GenerateMap();
 	GenerateMap(const int& dimx, const int& dimy);

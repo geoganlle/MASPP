@@ -10,7 +10,7 @@ std::string GenerateMap::GenerateMapName()
 		ss.clear();
 		_file.clear();
 		string_map_name.clear();
-		if (_mkdir("../map"))std::cout <<"mkdir failes: Folder \"map\" already exists"<< std::endl;//目录已存在
+		if (_mkdir("../map"))std::cout <<"mkdir failed: Folder \"map\" already exists"<< std::endl;//目录已存在
 		ss <<"../map/"<<int_dim_x << "x" << int_dim_y << "map" << fileindex<<".txt";
 		fileindex++;
 		ss >> string_map_name;

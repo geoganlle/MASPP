@@ -1,24 +1,15 @@
 #include "CBfs.h"
 
-
-
-CBfs::CBfs()
+CBfs::CBfs(stPoint* o, stPoint* d, CGridMap* g):
+	orig_stPoint(o),dest_stPoint(d),gridmap_CGridMapp(g)
 {
-	this->orig_stPoint = nullptr;
-	this->dest_stPoint = nullptr;
-	this->gridmap_CGridMapp = nullptr;
-	this->len_int = 0;
-	this->visited_boolp = nullptr;
-	this->solncost_int = 0;
-}
-
-CBfs::CBfs(stPoint* o, stPoint* d, CGridMap* g):orig_stPoint(o),dest_stPoint(d),gridmap_CGridMapp(g)
-{
-	solncost_int = std::numeric_limits<int>::max();
+	soln_cost_int = std::numeric_limits<int>::max();
 	this->dim_stPoint = g->getDim();
-	len_int = dim_stPoint.x * dim_stPoint.y;
-	visited_boolp = new bool[len_int]();//默认初始化为false(0)
-	if (gridmap_CGridMapp->hasNode(*orig_stPoint) && gridmap_CGridMapp->hasNode(*dest_stPoint) ){
+	visited_length_int = dim_stPoint.x * dim_stPoint.y;
+	visited_boolp = new bool[visited_length_int]();//默认初始化为false(0)
+
+	if (gridmap_CGridMapp->passable(*orig_stPoint) &&
+		gridmap_CGridMapp->passable(*dest_stPoint) ){
 		search();
 	}
 
@@ -32,30 +23,40 @@ CBfs::~CBfs()
 
 void CBfs::search()
 {
-	std::queue<stPointNode> node_queue;
-	node_queue.push(stPointNode(*orig_stPoint, WAIT, 0));
+	std::queue<stPointBFS> node_queue;
+	node_queue.push(stPointBFS(*orig_stPoint, WAIT, 0));
+	visited_boolp[gridmap_CGridMapp->hashpt(orig_stPoint)] = true;
 	while (!node_queue.empty()) {
-		stPointNode curNode = node_queue.front();
+		stPointBFS curNode = node_queue.front();
 		node_queue.pop();
+		//std::cout << "\nlog pop" << gridmap_CGridMapp->hashpt(&curNode.p_stPoint)<<"depth:"<< curNode.depth_int << std::endl;
 		if (curNode.p_stPoint.x == dest_stPoint->x && 
 			curNode.p_stPoint.y == dest_stPoint->y) {
-			solncost_int = curNode.depth_int;
+			soln_cost_int = curNode.depth_int;
 			return;
 		}
 
 		bool* eighborhood = gridmap_CGridMapp->getNeighbor(curNode.p_stPoint);
-		
-		for (int i = 0; i < DIM; i++) {//处理8个邻居
-			stPoint child = getPoint_move_dir(&(curNode.p_stPoint), i);
-			int hash = child.y * dim_stPoint.x + child.x;
-			if (gridmap_CGridMapp->hasNode(child) &&
-				!visited_boolp[hash] && i != curNode.dir_int && //未访问过且不为来时的方向
-				eighborhood && eighborhood[i]) {//eighborhood!=NULL 邻居点无障碍物
-				int to_parent_dir = reverse_dir(i);
-				int depth = curNode.depth_int + 1;
-				node_queue.push(stPointNode(child, to_parent_dir, depth));
-				visited_boolp[hash] = true;	//初始化时默认是false
+		if (eighborhood) {
+			for (int i = 0; i < DIM; i++) {//处理8个邻居
+				stPoint child = dir_move_stPoint(&(curNode.p_stPoint), i);
+
+				int child_hash = child.y * dim_stPoint.x + child.x;
+
+				//std::cout << " dir " << dir_to_string(i) <<" eighborhood[i] "<< eighborhood[i] << " y" << child.y << " x" << child.x << " hash" << child_hash;
+				//std::cout << " vis " << visited_boolp[child_hash]<< " i " <<i << "curdir "<<curNode.dir_int;
+				if (//gridmap_CGridMapp->passable(child) &&//子节点可通行
+					!visited_boolp[child_hash] && i != curNode.dir_int && //未访问过且不为来时的方向
+					eighborhood[i]) {// 子节点无障碍物
+					int to_parent_dir = dir_reverse(i);
+					int depth = curNode.depth_int + 1;
+					node_queue.push(stPointBFS(child, to_parent_dir, depth));
+					//std::cout << " push "<< child_hash ;
+					visited_boolp[child_hash] = true;	//初始化时默认是false
+				}
+				//std::cout << "\n";
 			}
+			//std::cout << "end line \n";
 		}
 		delete[] eighborhood;
 	}

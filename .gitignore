@@ -343,3 +343,5 @@ healthchecksdb
 /tests
 /map
 /test
+/distance
+/preprocessing

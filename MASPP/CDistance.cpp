@@ -2,6 +2,7 @@
 
 void CDistance::populate()
 {
+	
 	int dimX = gridmap_CGridMap->getDim().x;
 	int dimY = gridmap_CGridMap->getDim().y;
 	for (int i = 0; i < dimX; i++) {
@@ -21,9 +22,10 @@ void CDistance::search(stPoint& o, stPoint& d)
 {
 	int dimX = gridmap_CGridMap->getDim().x;
 	int dimY = gridmap_CGridMap->getDim().y;
-	CBfs bfs(&o, &d, this->gridmap_CGridMap);
-	table_intpp[o.y * dimX + o.x][d.y * dimX + d.x] = bfs.getsolncost_int();
-	bfs.~CBfs();
+	CBfs* bfs=new CBfs(&o, &d, this->gridmap_CGridMap);
+	if(gridmap_CGridMap->hashpt(&o)< (dimX * dimY)&&gridmap_CGridMap->hashpt(&d)<(dimX * dimY))
+	table_intpp[gridmap_CGridMap->hashpt(&o)][gridmap_CGridMap->hashpt(&d)] = (*bfs).get_soln_cost_int();
+	bfs ->~CBfs();
 }
 
 CDistance::CDistance(CGridMap* gridmap):gridmap_CGridMap(gridmap)
@@ -43,4 +45,25 @@ CDistance::~CDistance()
 	for (int i = 0; i < dimX * dimY; i++)
 		delete[] table_intpp[i];
 	delete[] table_intpp;
+}
+
+void CDistance::printDistanceTable()
+{
+	int n = gridmap_CGridMap->getDim().x * gridmap_CGridMap->getDim().y;
+	std::ofstream __file;
+	if (_mkdir("../distance"))std::cout << "mkdir failed: Folder \"distance\" already exists" << std::endl;//Ä¿Â¼ÒÑ´æÔÚ
+	__file.open("../distance/table.txt", std::ios::out | std::ios::trunc);
+	if (!__file.is_open()) {
+		std::cout << "file open failed" << std::endl;
+		__file.close();
+		return;
+	}
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			__file << table_intpp[i][j] << "\t";
+		}
+		__file << std::endl;
+	}
+	__file.close();
+	std::cout << "file written in /distance/table.txt finish" << std::endl;
 }

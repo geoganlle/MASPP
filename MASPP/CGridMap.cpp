@@ -2,8 +2,6 @@
 #include <vector>
 #include <string>
 
-
-
 void CGridMap::printGridMap()
 {
 	std::cout<<"GridMap Print:"<<std::endl;
@@ -15,11 +13,14 @@ void CGridMap::printGridMap()
 	}
 	std::cout << std::endl;
 }
-/*0false 1true*/
+
+/*检测周围8个点是否可通行*/
 bool* CGridMap::getNeighbor(const stPoint& pos) const
 {
-	int x = pos.x;
 	int y = pos.y;
+	int x = pos.x;
+
+	//输入点越界则直接返回
 	if (x < 0 || x >= dimX_int || y < 0 || y >= dimY_int)
 		return NULL;
 
@@ -35,22 +36,12 @@ bool* CGridMap::getNeighbor(const stPoint& pos) const
 	neighbor[WEST] = x - 1 >= 0 && map_boolpp[y][x-1];
 	neighbor[NORTH] = y - 1 >= 0 && map_boolpp[y - 1][x];
 
-
 	neighbor[EN] = y - 1 >= 0 && x + 1 < dimX_int && map_boolpp[y - 1][x + 1];
 	neighbor[ES] = y + 1 < dimY_int && x + 1 < dimX_int && map_boolpp[y + 1][x + 1];
 	neighbor[WS] = y + 1 < dimY_int && x - 1 >= 0 && map_boolpp[y + 1][x - 1];
 	neighbor[WN] = y - 1 >= 0 && x - 1 >= 0 && map_boolpp[y - 1][x - 1];
 
 	return neighbor;
-}
-
-
-
-CGridMap::CGridMap()
-{
-	this->dimX_int = 0;
-	this->dimY_int = 0;
-	this->map_boolpp = nullptr;
 }
 
 CGridMap::CGridMap(std::string pathname)
@@ -82,7 +73,7 @@ CGridMap::CGridMap(std::string pathname)
 	printGridMap();
 	std::cout << "dimX = " << dimX_int << " dimY = " << dimY_int <<std::endl;
 }
-
+/*
 CGridMap::CGridMap(int dimX, int dimY, stPoint** blocklist, int listlen)
 {
 	dimX_int = dimX;
@@ -95,13 +86,14 @@ CGridMap::CGridMap(int dimX, int dimY, stPoint** blocklist, int listlen)
 		map_boolpp[i] = new bool[dimX];
 		for (int j = 0; j < dimX; j++) {
 			map_boolpp[i][j] = false; 
-			if (blocklist && pointEquals(*blocklist, i, j))
-				blocklist = (blocklist + 1 == endPoint) ? 0 : blocklist + 1;//判断是否是最后一个空白点
+			if (blocklist && **blocklist==stPoint(i,j))//判断有没有障碍物
+				blocklist = (blocklist + 1 == endPoint) ? 0 : blocklist + 1;//判断是否是最后一个障碍物
 			else
 				map_boolpp[i][j] = true;
 		}
 	}
 }
+*/
 
 
 CGridMap::~CGridMap()
