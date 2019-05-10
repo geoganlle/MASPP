@@ -1,8 +1,9 @@
 /*
 program file No.4
-描述搜索的状态
-智能体上一步的位置pre_move[n]
-智能体下一步的位置post_move[n]
+描述系统搜索的状态
+针对A*算法的运算符分解（Operator Decomposition，OD）
+每个智能体计划移动的位置pre_move[n]
+每个智能体移动前的位置post_move[n]
 **/
 
 #pragma once
@@ -10,7 +11,7 @@ program file No.4
 #include "CDistance.h"
 
 /*
-描述系统搜索的状态
+描述一个智能体的一次移动行为
 **/
 struct stMove
 {
@@ -24,7 +25,7 @@ struct stMove
 **/
 struct stAgentPosition {//智能体Agent的位置
 	stPoint pos_stPoint;//智能体的位置
-	int timestep_int;//时间步长
+	int timestep_int;//时间步长*耗时
 	int agentid_int;//智能体编号
 	stAgentPosition(stPoint pos, int time, int agentid) :pos_stPoint(pos), timestep_int(time), agentid_int(agentid) {};
 	stAgentPosition():pos_stPoint(0,0),timestep_int(0),agentid_int(0){};
@@ -36,18 +37,20 @@ struct stAgentPosition {//智能体Agent的位置
 class CState
 {
 	const CState* parentState;//上一状态
-	stPoint* pre_move_stPoint;	//移动前的位置
-	stPoint* post_move_stPoint;	//移动后的位置
-	short n_int; //智能体的数量 SHRT_MAX = 32767
+	stPoint* pre_move_stPoint;	//计划移动的位置
+	stPoint* post_move_stPoint;	//移动前的位置
+	short n_agent_number_int; //智能体的数量 SHRT_MAX = 32767
 	int cost_int;//该状态的总成本
 	
-	void increment_step();//移动一步 用post_move_stPoint复制pre_move_stPoint
+	void increment_step();//移动一步 pre_move_stPoint=post_move_stPoint
 	
 	/*
-	碰撞检测，若有碰撞返回碰撞点，若无碰撞返回NULL(0/false) 
-	post :与下一次移动比较(true)还是与上一次移动比较(false)
+	碰撞检测函数
+	有碰撞的话返回碰撞点
+	无碰撞返回NULL
+	 post :与post_move比较(true)还是与pre_move比较(false)
 	**/
-	stPoint* collision(stPoint* p, int agent, bool post);
+	stPoint* collision_detection(stPoint* p, int agent, bool post);
 public:
 
 	CState(stPoint* init,int n_agent_number);
@@ -64,17 +67,17 @@ public:
 	int h(stPoint* goal, CGridMap* g);	//真实距离启发式 True Distance Heuristic
 	int h(stPoint* goal, CDistance* dist);
 
-	int  timestep();//平均每个智能体的花销
+	int  timestep();//平均每个智能体的开销(耗时)
 
-	stAgentPosition get_move_AgentPosition(const stMove& move);//返回智能体将要移动后的位置映射
+	stAgentPosition get_move_AgentPosition(const stMove& move);//返回状态中post_move一次移动之后的位置
 
-	bool* valid_moves(int, CGridMap*);//智能体的有效移动列表 9种选择
+	bool* valid_moves(int, CGridMap*);//返回pre_post的有效移动方向 (9种选择,8个方向+wait)
 	
 	stPoint* get_pre_move_stPoint(int id);
 };
 inline
 void CState::increment_step() {
-	for (int i = 0; i < n_int; i++) {
+	for (int i = 0; i < n_agent_number_int; i++) {
 		pre_move_stPoint[i] = post_move_stPoint[i];
 	}
 }
@@ -87,7 +90,7 @@ int CState::g() {
 inline int CState::h(stPoint* goal)
 {
 	int cost = 0;
-	for (int i = 0; i < n_int; i++) {
+	for (int i = 0; i < n_agent_number_int; i++) {
 		int xd = goal[i].x - post_move_stPoint[i].x;
 		int yd = goal[i].y - post_move_stPoint[i].y;
 		cost += (xd > 0) ? xd : -xd;
@@ -99,11 +102,11 @@ inline int CState::h(stPoint* goal)
 inline
 int CState::timestep()
 {
-	return cost_int/n_int;
+	return cost_int/n_agent_number_int;
 }
 
 inline
 stPoint* CState::get_pre_move_stPoint(int agentid)
 {
-	return (agentid >= 0 && agentid < n_int) ? &pre_move_stPoint[agentid] : NULL;
+	return (agentid >= 0 && agentid < n_agent_number_int) ? &pre_move_stPoint[agentid] : NULL;
 }

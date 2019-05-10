@@ -108,7 +108,7 @@ int CAgentSystem::resolve_conflicts(void) {
 					cat[i].insert({ {lastPosition_AgentPosition.timestep_int, lastPosition_AgentPosition} });
 				}
 				else {
-					/* Merge the groups */
+					/* ºÏ²¢×é */
 					std::cout << "Merging\n";
 					std::vector<int>* g1 = &groups[i];
 					std::vector<int>* g2 = &groups[j];

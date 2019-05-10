@@ -1,16 +1,26 @@
-﻿#include <iostream>
+﻿/*
+程序的入口:
+主函数
+
+梦开始的地方
+**/
+
+#include <iostream>
 #include"CDistance.h"
 #include"CAgent.h"
 #include <string>
 #include <iomanip>
-#define MAX_TOUR 1000
+/*预处理检测路径是否存在时的开销限制
+后期可优化*为依据地图特征计算的开销估值
+*/
+#define MAX_TOUR 10000
 
 using namespace std;
 
-bool mapftest(string testfile);
-stAgentSystem run_mapf(string path_g, string path_a);
-stPoint** readpos_agent(string pathname, int& n);
-bool chksolution(int init[], int goal[], int len, CGridMap* g);
+bool mapftest(string testfile);//从文件中读取数据测试
+stAgentSystem run_mapf(string path_g, string path_a);//运行一个测试实例
+stPoint** readpos_agent(string pathname, int& n);//从文件中读取agent信息
+bool chksolution(int init[], int goal[], int len, CGridMap* g);//预检查路径是否存在
 
 int main() {
 	//CGridMap g("../map/4x4map0.txt");
@@ -77,7 +87,7 @@ bool mapftest(string testfile) {
 			cout << fixed;
 			cout << "\tNum agents = " << it->num_agents_int << endl;
 			cout << "\tTime = ";
-			cout << setprecision(8) << it->time_timet << "s\n";
+			cout << fixed<<setprecision(8) << it->time_timet << "s\n";
 			cout << "\tCollisions = " << it->num_collisions_int << endl;
 			cout << "\tNum expansions = " << it->num_expansions_int << endl;
 
@@ -107,6 +117,8 @@ bool mapftest(string testfile) {
 	cout << setprecision(2);
 	cout << "Average Node exp = " << avg_exp << endl;
 	cout << "\tMin = " << min_exp << "\tMax = " << max_exp << endl;
+	cout << fixed;
+	cout << setprecision(4);
 	cout << "Average solution time = " << avg_t << endl;
 	cout << "\tMin = " << min_t << "\tMax = " << max_t << endl;
 

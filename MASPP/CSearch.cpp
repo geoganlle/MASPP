@@ -59,7 +59,7 @@ std::vector<int>* CSearch::getpath(stNode_Search* node_input)
 	……
 	**/
 	do {
-		if (!node_input->parent_stNodep)return moves;//确保父节点存在
+		if (!node_input->parent_stNodep)break;//如果父节点不存在则直接返回
 		CState* parent_state = node_input->parent_stNodep->state_CStatep;
 
 		CState* current_state = node_input->state_CStatep;
