@@ -151,7 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CAgent.cpp" />
+    <ClCompile Include="CMultiAgentSystem.cpp" />
     <ClCompile Include="CBfs.cpp" />
     <ClCompile Include="CDistance.cpp" />
     <ClCompile Include="CGridMap.cpp" />
@@ -160,7 +160,7 @@
     <ClCompile Include="CState.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CAgent.h" />
+    <ClInclude Include="CMultiAgentSystem.h" />
     <ClInclude Include="CBfs.h" />
     <ClInclude Include="CDistance.h" />
     <ClInclude Include="CGridMap.h" />

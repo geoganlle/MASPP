@@ -1,24 +1,27 @@
 ﻿/*
+梦开始的地方
+
 程序的入口:
 主函数
 
-梦开始的地方
+
 **/
 
 #include <iostream>
 #include"CDistance.h"
-#include"CAgent.h"
+#include"CMultiAgentSystem.h"
 #include <string>
 #include <iomanip>
+
 /*预处理检测路径是否存在时的开销限制
 后期可优化*为依据地图特征计算的开销估值
 */
-#define MAX_TOUR 10000
+constexpr auto MAX_TOUR = 10000;
 
 using namespace std;
 
 bool mapftest(string testfile);//从文件中读取数据测试
-stAgentSystem run_mapf(string path_g, string path_a);//运行一个测试实例
+stMultiAgentSystem run_mapf(string path_g, string path_a);//运行一个测试实例
 stPoint** readpos_agent(string pathname, int& n);//从文件中读取agent信息
 bool chksolution(int init[], int goal[], int len, CGridMap* g);//预检查路径是否存在
 
@@ -49,7 +52,7 @@ bool mapftest(string testfile) {
 	double avg_t = 0;
 	double min_t = numeric_limits<double>::infinity();
 
-	vector<stAgentSystem> mapf_tests;
+	vector<stMultiAgentSystem> mapf_tests;
 
 	if (!file.is_open()) return false;
 
@@ -64,7 +67,7 @@ bool mapftest(string testfile) {
 		cerr << "Beginning instance " << total << endl;
 		cout << "grid path= " + grid_path + "\t agent path= " + agent_path + "\n";
 
-		stAgentSystem tmp = run_mapf(grid_path, agent_path);
+		stMultiAgentSystem tmp = run_mapf(grid_path, agent_path);
 		mapf_tests.push_back(tmp);
 		if (tmp.canbesolved_bool)
 			pos++;
@@ -124,19 +127,19 @@ bool mapftest(string testfile) {
 
 	return true;
 }
-stAgentSystem run_mapf(string path_g, string path_a) {
+stMultiAgentSystem run_mapf(string path_g, string path_a) {
 
 	int num_agents = -1;
 	path_a = "../agents/" + path_a;
 	stPoint** states = readpos_agent(path_a, num_agents);
 	CGridMap grid("../grids/" + path_g);
 
-	stAgentSystem info(num_agents,0, 0,0, 0, false, grid.getDim());
+	stMultiAgentSystem info(num_agents,0, 0,0, 0, false, grid.getDim());
 
 	if (!chksolution((int*)states[0], (int*)states[1], num_agents, &grid))
 		return info;
 
-	CAgentSystem m(num_agents, states[0], states[1], &grid);
+	CMultiAgentSystem m(num_agents, states[0], states[1], &grid);
 
 	int res;
 	while (res = m.resolve_conflicts()) {

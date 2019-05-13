@@ -27,13 +27,13 @@
     <ClCompile Include="CGridMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="CAgent.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="CState.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CSearch.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CMultiAgentSystem.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,13 +47,13 @@
     <ClInclude Include="CGridMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CAgent.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CState.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CSearch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CMultiAgentSystem.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

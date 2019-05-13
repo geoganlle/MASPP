@@ -2,8 +2,13 @@
 program file No.4
 描述系统搜索的状态
 针对A*算法的运算符分解（Operator Decomposition，OD）
+分解成每个Agent一个状态（State）
+
+说明
 每个智能体计划移动的位置pre_move[n]
-每个智能体移动前的位置post_move[n]
+每个智能体移动后的位置post_move[n]
+
+Written by Geoganlle Goo
 **/
 
 #pragma once
@@ -38,7 +43,7 @@ class CState
 {
 	const CState* parentState;//上一状态
 	stPoint* pre_move_stPoint;	//计划移动的位置
-	stPoint* post_move_stPoint;	//移动前的位置
+	stPoint* post_move_stPoint;	//移动后的位置
 	short n_agent_number_int; //智能体的数量 SHRT_MAX = 32767
 	int cost_int;//该状态的总成本
 	
@@ -67,7 +72,7 @@ public:
 	int h(stPoint* goal, CGridMap* g);	//真实距离启发式 True Distance Heuristic
 	int h(stPoint* goal, CDistance* dist);
 
-	int  timestep();//平均每个智能体的开销(耗时)
+	int  timestep();//平均每个智能体的开销(state 状态链表的长度)
 
 	stAgentPosition get_move_AgentPosition(const stMove& move);//返回状态中post_move一次移动之后的位置
 

@@ -1,5 +1,7 @@
 /*
 program file No.6
+
+Written by Geoganlle Goo
 **/
 #pragma once
 #include "CGridMap.h"
@@ -18,7 +20,7 @@ struct stAgent
 			id(id), init(init), goal(goal),	path(NULL) {};
 };
 
-struct stAgentSystem {	// 一个多智能体系统的整体信息 
+struct stMultiAgentSystem {	// 一个多智能体系统的整体信息 
 	int num_agents_int;	//智能体数量
 	int	num_expansions_int;	//扩展节点的数量
 	int	num_collisions_int;	//冲突的数量
@@ -26,11 +28,11 @@ struct stAgentSystem {	// 一个多智能体系统的整体信息
 	time_t	time_timet;	//解决方案总耗时
 	bool 	canbesolved_bool;//问题是否可以解决
 	stPoint	dim;	//地图尺寸
-	stAgentSystem(int na, int ne, int nc, int cost, time_t t, bool s, stPoint d) :
+	stMultiAgentSystem(int na, int ne, int nc, int cost, time_t t, bool s, stPoint d) :
 		num_agents_int(na), num_expansions_int(ne), num_collisions_int(nc), system_cost_int(cost), time_timet(t), canbesolved_bool(s), dim(d) {};
 };
 
-class CAgentSystem 
+class CMultiAgentSystem 
 {
 private:
 	int n_agent_number_int;//智能体数量
@@ -53,8 +55,8 @@ private:
 	int path_conflict(std::vector<int>* p1, std::vector<int>* p2, int len);
 
 public:
-	CAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CGridMap* gd);
-	~CAgentSystem();
+	CMultiAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CGridMap* gd);
+	~CMultiAgentSystem();
 	int resolve_conflicts(void);//解决冲突
 
 	int	num_expansions(void);
@@ -64,21 +66,21 @@ public:
 };
 
 inline
-int CAgentSystem::num_expansions(void) {
+int CMultiAgentSystem::num_expansions(void) {
 	return e_expansions_int;
 }
 
 inline
-time_t CAgentSystem::get_time(void) {
+time_t CMultiAgentSystem::get_time(void) {
 	return elapse_t;
 }
 
 inline
-int CAgentSystem::get_collisions(void) { 
+int CMultiAgentSystem::get_collisions(void) { 
 	return c_collisions_int; 
 }
 
 inline
-int CAgentSystem::cost(void) { 
+int CMultiAgentSystem::cost(void) { 
 	return max_cost_int; 
 }

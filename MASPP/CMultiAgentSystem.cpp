@@ -1,6 +1,6 @@
-#include "CAgent.h"
+#include "CMultiAgentSystem.h"
 
-CAgentSystem::CAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CGridMap* gd) : n_agent_number_int(n), gridmap_CGridMap(gd) {
+CMultiAgentSystem::CMultiAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CGridMap* gd) : n_agent_number_int(n), gridmap_CGridMap(gd) {
 	e_expansions_int = 0;
 	c_collisions_int = 0;
 	elapse_t = 0;
@@ -17,13 +17,13 @@ CAgentSystem::CAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CGridMap* gd
 	}
 }
 
-CAgentSystem::~CAgentSystem() {
+CMultiAgentSystem::~CMultiAgentSystem() {
 	delete distance_CDistance;
 	delete[] cat;
 }
 
 //解决小组之间的冲突。如果存在冲突，则合并组
-int CAgentSystem::resolve_conflicts(void) {
+int CMultiAgentSystem::resolve_conflicts(void) {
 
 	//为每个小组找到独立的解决方案并寻找冲突
 	bool conflicts = false;	// 指示是否找到冲突
@@ -50,7 +50,7 @@ int CAgentSystem::resolve_conflicts(void) {
 			result = s.expand();
 		} while (!result);
 
-		max_cost_int = (s.cost() > max_cost_int) ? s.cost() : max_cost_int;
+		max_cost_int = (s.get_cost_int() > max_cost_int) ? s.get_cost_int() : max_cost_int;
 
 		if (result == 2) {//节点过多
 			delete[] s_init;
@@ -59,7 +59,7 @@ int CAgentSystem::resolve_conflicts(void) {
 			return 2;
 		}
 
-		e_expansions_int += s.num_expansions();
+		e_expansions_int += s.get_num_expansions_int();
 
 		std::vector<int>* g_paths = s.path(false);	// Get the soln path
 
@@ -137,7 +137,7 @@ int CAgentSystem::resolve_conflicts(void) {
 	return (conflicts) ? 1 : 0;
 }
 
-int CAgentSystem::group_conflict(std::vector<int> * g1, std::vector<int> * g2, int len1, int len2) {
+int CMultiAgentSystem::group_conflict(std::vector<int> * g1, std::vector<int> * g2, int len1, int len2) {
 	if (!(g1 && g2)) return false;
 
 	/*取短数组组的长度 */
@@ -156,7 +156,7 @@ int CAgentSystem::group_conflict(std::vector<int> * g1, std::vector<int> * g2, i
 	return (numc > 1) ? 2 : 1;	// 2超过两个以上冲突 1只有一个冲突
 }
 
-int CAgentSystem::path_conflict(std::vector<int> * p1, std::vector<int> * p2, int len) {
+int CMultiAgentSystem::path_conflict(std::vector<int> * p1, std::vector<int> * p2, int len) {
 	int numc = 0;
 	for (int i = 0; i < len; i++) {
 		if (p1->at(i) == p2->at(i)) {

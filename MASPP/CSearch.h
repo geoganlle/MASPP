@@ -1,6 +1,8 @@
 /*
 program file No.5
 搜索类
+
+Written by Geoganlle Goo
 **/
 #pragma once
 #include "CGridMap.h"
@@ -11,6 +13,13 @@ program file No.5
 
 constexpr auto EXPLIM = 20000000;	// 最大节点处理数;参考:最大int为2147483647
 
+/*
+针对每个智能体的节点结构体
+封装了A*算法的启发式估值f(n)
+对state进行了封装，方便生成逻辑组织结构
+->node(0)<-node(1)<-node(2)  
+A->B表示A的父指针指向B
+**/
 struct stNode_Search {
 	int f;//成本估值 f(n) = g(n) + h(n)
 	short agentid_short;//要移动智能体的id
@@ -32,9 +41,14 @@ class CSearch
 	stPoint* goal_stPointp;	// 目标状态集
 	stPoint* init_stPointp;	// 初始状态集
 
-	stNode_Search* current_stNode;//如果找到目标节点则设置为当前节点
+	stNode_Search* last_stNode;//如果找到目标节点则设置为当前节点
 
-	std::unordered_map<int,stAgentPosition>* cat;//碰撞避免表 Collision avoidance table
+	std::unordered_map<int,stAgentPosition>* CAT;//碰撞避免表 Collision avoidance table
+	/*
+	int timestep 用路径长度上的开销做主键索引智能体的位置结构体
+	stAgentPosition 智能体的位置
+	*/
+
 	std::priority_queue<stNode_Search*> open_priority_queue;//待完成的搜索点 优先队列 大顶堆
 	std::vector<stNode_Search*> closed_vector;//已完成的搜索点
 
@@ -47,8 +61,8 @@ class CSearch
 
 public:
 	int	expand();//选择一个f(n)最小的点	返回值说明：1目标节点 2处理节点数过多
-	int	num_expansions();//计算扩展节点数
-	int cost();	//搜索成本
+	int	get_num_expansions_int();//计算扩展节点数
+	int get_cost_int();	//搜索成本
 
 	std::vector<int>* path(bool print);	//从目标中检索找到的路径
 
@@ -58,11 +72,11 @@ public:
 };
 
 inline
-int CSearch::num_expansions(void) { 
+int CSearch::get_num_expansions_int() { 
 	return expansions_node_number_int; 
 }
 
-inline int CSearch::cost()
+inline int CSearch::get_cost_int()
 {
 	return cost_path_int;
 }

@@ -1,7 +1,7 @@
 #include "CSearch.h"
 
 
-/*生成一个节点的子节点*/
+/*生成一个节点的给定方向的子节点*/
 stNode_Search* CSearch::generate_childnode(stNode_Search* node_input, int dir_input)
 {
 	if (node_input==nullptr)return nullptr;
@@ -26,6 +26,7 @@ stNode_Search* CSearch::generate_childnode(stNode_Search* node_input, int dir_in
 	return child;
 }
 
+//检测是否是目标节点
 bool CSearch::is_goal_stNode(stNode_Search* node_input)
 {
 	if (node_input->agentid_short) return false;//目标节点必然是智能体编号为0的节点
@@ -35,17 +36,19 @@ bool CSearch::is_goal_stNode(stNode_Search* node_input)
 		if (goal_stPointp[i].x != p->x || goal_stPointp[i].y != p->y)
 			return false;
 	}
-	current_stNode = node_input;//将当前节点设置为目标节点
+	last_stNode = node_input;//将当前节点设置为目标节点
 	cost_path_int = node_input->state_CStatep->g() / n_agentnumber_int;
 	std::cout << "found goal node with cost " << node_input->state_CStatep->g() / n_agentnumber_int << "!\n";
-	std::cout << "\tNum Expansions = " << num_expansions() << " nodes\n";
+	std::cout << "\tNum Expansions = " << get_num_expansions_int() << " nodes\n";
 	return true;
 }
 
 std::vector<int>* CSearch::getpath(stNode_Search* node_input)
 {
-	/* 返回每个智能体的移动数组
-	 *	moves[i] 表示智能体id的移动轨迹
+	/* 
+		
+		返回每个智能体的移动数组
+	 *	moves[i] 表示智能体i的移动轨迹
 	 */
 	if (!node_input) return NULL;
 
@@ -55,7 +58,6 @@ std::vector<int>* CSearch::getpath(stNode_Search* node_input)
 	moves[0]	vector<int> //0号智能体的路径
 	moves[1]	vector<int>
 	moves[2]	vector<int>
-	moves[3]	vector<int>
 	……
 	**/
 	do {
@@ -101,68 +103,65 @@ int* CSearch::get_hashPoint_of_path(int agent, const std::vector<int>& path_vect
 int CSearch::expand()
 {
 	/* 选择open集合中f成本最小的节点*/
-
-	stNode_Search* mynode = NULL;//待拓展的的节点
+	stNode_Search* expand_node = NULL;//待拓展的的节点
 
 	if (open_priority_queue.empty()) {
 		std::cout << "ERROR: NULL chosen for expansion .open_priority_queue.empty() \n";
 		return false;
 	}
 
-	mynode = open_priority_queue.top();
+	expand_node = open_priority_queue.top();
 	open_priority_queue.pop();
 
-	int my_node_f = mynode->f;
+	int expand_node_f = expand_node->f;
 	/* 如果是目标节点直接返回1 */
-	if (is_goal_stNode(mynode))
+	if (is_goal_stNode(expand_node))
 		return 1;
 	/* 拓展节点过多则返回2 */
-	if (num_expansions() > EXPLIM) {
+	if (get_num_expansions_int() > EXPLIM) {
 		std::cout << "Exceeded expansion threshold";
 		return 2;
 	}
 	/* 获取node节点智能体可移动的位置 */
-	int agentid = mynode->agentid_short;
+	int agentid = expand_node->agentid_short;
+	bool* valid_m = expand_node->state_CStatep->valid_moves(agentid,gridmap);
 
-	bool* valid_m = mynode->state_CStatep->valid_moves(agentid,gridmap);
-
-	/* 不允许反向移动 */
-	int lastmove = ( mynode->parent_stNodep ) ? 
-		dir_get(mynode->state_CStatep->get_pre_move_stPoint(agentid),
-			mynode->parent_stNodep->state_CStatep->get_pre_move_stPoint(agentid)) :
+	/* 存储最后一次移动的方向 用于禁止反向移动 */
+	int lastmove = ( expand_node->parent_stNodep ) ? 
+		dir_get(expand_node->state_CStatep->get_pre_move_stPoint(agentid),
+			expand_node->parent_stNodep->state_CStatep->get_pre_move_stPoint(agentid)) :
 		WAIT;
 
 	for (int i = 0; i < DIM + 1; i++) {
 		if (valid_m[i]) { //&& i != lastmove) {
-
-			if (cat != NULL) {//碰撞检测
-				stAgentPosition tmp_pos = mynode->state_CStatep->get_move_AgentPosition(stMove((eDirection)i, agentid));
-				if ((cat->find(tmp_pos.timestep_int)) != cat->end()) {
-					auto it = cat->find(tmp_pos.timestep_int);
+			if (CAT != NULL) {//碰撞检测 原理:相同时间 智能体相同，智能体的位置也相同
+				stAgentPosition tmp_pos = expand_node->state_CStatep->get_move_AgentPosition(stMove((eDirection)i, agentid));
+				if ((CAT->find(tmp_pos.timestep_int)) != CAT->end()) {
+					auto it = CAT->find(tmp_pos.timestep_int);
 					if (it->second == tmp_pos) {//找到碰撞
-						continue;
+						continue;//不生成子节点 开始检测下一个方向
 					}
 				}
 			}
-			open_priority_queue.push(generate_childnode(mynode,i));//生成一个子节点
+			open_priority_queue.push(generate_childnode(expand_node,i));//生成一个子节点
 		}
 	}
 
 	if (agentid) {
-		delete mynode->state_CStatep;
-		delete mynode;
+		delete expand_node->state_CStatep;
+		delete expand_node;
 	}
-	else closed_vector.push_back(mynode);
+	else closed_vector.push_back(expand_node);
 	delete[] valid_m;
 	return 0;
 }
 
  std::vector<int>* CSearch::path(bool print=false)
 {
-	 if (!current_stNode) return NULL;//当前节点不存在的话返回空
+	 if (!last_stNode) return NULL;//当前节点不存在的话返回空
 
 	 std::vector<int>* pos = new std::vector<int>[n_agentnumber_int];
-	 std::vector<int>* moves = getpath(current_stNode);
+	 std::vector<int>* moves = getpath(last_stNode);
 
 	 for (int i = 0; i < n_agentnumber_int; i++) {
 		 if (print) std::cout << "Player " << i << std::endl;
@@ -186,9 +185,9 @@ int CSearch::expand()
 	 init_stPointp(init),
 	 gridmap(g),
 	 distance_CDistance(d),
-	 cat(cat),
+	 CAT(cat),
 	 expansions_node_number_int(1),
-	 current_stNode(nullptr),
+	 last_stNode(nullptr),
 	 cost_path_int(0)
 {
 	goal_stPointp = new stPoint[agentnumber];
