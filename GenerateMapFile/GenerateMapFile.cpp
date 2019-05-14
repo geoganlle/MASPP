@@ -5,8 +5,8 @@
 #include "GenerateMap.h"
 int main()
 {
-	GenerateMap * map=new GenerateMap(4,4);
-	map->RandGenerateMap(0,0.5);
+	GenerateMap * map=new GenerateMap(10,10);
+	map->RandGenerateMap(0,0.85);
 	map->PrintConsole();
 	map->WriteFile();
     std::cout << "map generation program finished"<<std::endl; 

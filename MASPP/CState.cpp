@@ -50,7 +50,7 @@ CState::CState(int n, const CState& parent, const stMove& move):n_agent_number_i
 			this->parentState = parent.parentState;
 		}
 		else {
-			std::cerr<<"Error : Can not construct CState with no parentState.  "<<std::endl;
+			//std::cerr<<"Error : Can not construct CState with no parentState.  "<<std::endl;
 			this->parentState = nullptr;
 			//return;
 		}

@@ -11,7 +11,7 @@ Written by Geoganlle Goo
 #include <vector>
 #include <unordered_map>
 
-constexpr auto EXPLIM = 20000000;	// 最大节点处理数;参考:最大int为2147483647
+constexpr auto EXPLIM = 2000000;	// 最大节点处理数;参考:最大int为2147483647
 
 /*
 针对每个智能体的节点结构体

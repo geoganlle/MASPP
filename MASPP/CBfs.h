@@ -3,6 +3,7 @@ program file No.2
 广度优先搜索
 计算地图中两点间的距离
 主要用于确认路径是否存在
+Written by Geoganlle Goo
 **/
 #pragma once
 #include <iostream>

@@ -46,8 +46,10 @@ void CBfs::search()
 				//std::cout << " dir " << dir_to_string(i) <<" eighborhood[i] "<< eighborhood[i] << " y" << child.y << " x" << child.x << " hash" << child_hash;
 				//std::cout << " vis " << visited_boolp[child_hash]<< " i " <<i << "curdir "<<curNode.dir_int;
 				if (//gridmap_CGridMapp->passable(child) &&//子节点可通行
-					!visited_boolp[child_hash] && i != curNode.dir_int && //未访问过且不为来时的方向
-					eighborhood[i]) {// 子节点无障碍物
+					i != curNode.dir_int && //未访问过且不为来时的方向
+					eighborhood[i] &&
+					!visited_boolp[child_hash]
+					) {// 子节点无障碍物
 					int to_parent_dir = dir_reverse(i);
 					int depth = curNode.depth_int + 1;
 					node_queue.push(stPointBFS(child, to_parent_dir, depth));

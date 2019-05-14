@@ -35,7 +35,7 @@ struct stAgentPosition {//智能体Agent的位置
 	stAgentPosition(stPoint pos, int time, int agentid) :pos_stPoint(pos), timestep_int(time), agentid_int(agentid) {};
 	stAgentPosition():pos_stPoint(0,0),timestep_int(0),agentid_int(0){};
 	bool operator==(const stAgentPosition& agentpos_input) {
-		return this->pos_stPoint==agentpos_input.pos_stPoint && this->agentid_int == agentpos_input.agentid_int;
+		return (this->pos_stPoint==agentpos_input.pos_stPoint) && (this->agentid_int == agentpos_input.agentid_int);
 	};
 };
 
@@ -66,7 +66,7 @@ public:
 
 	//A*算法公式：f(n)=g(n)+h(n)
 	
-	int g(void);//从初始节点到该状态的代价
+	int g();//从初始节点到该状态的代价
 
 	int h(stPoint* goal);//曼哈顿距离启发式  Manhattan Distance Heuristic
 	int h(stPoint* goal, CGridMap* g);	//真实距离启发式 True Distance Heuristic

@@ -5,11 +5,13 @@ CMultiAgentSystem::CMultiAgentSystem(int n, stPoint* s_init, stPoint* s_goal, CG
 	c_collisions_int = 0;
 	elapse_t = 0;
 	max_cost_int = 0;
-	time(&start_t);
+	//time(&start_t);
+	start_t = clock();
 	distance_CDistance = new CDistance(gridmap_CGridMap);
 	cat = new std::unordered_map<int, stAgentPosition>[n];
 
 	for (int i = 0; i < n; i++) {
+		//对每个智能体创建结构体和解决方案的路径数组
 		agentlist.push_back(stAgent(i, s_init[i], s_goal[i]));
 		std::vector<int> list;
 		list.push_back(i);
@@ -22,7 +24,7 @@ CMultiAgentSystem::~CMultiAgentSystem() {
 	delete[] cat;
 }
 
-//解决小组之间的冲突。如果存在冲突，则合并组
+//解决小组之间的冲突。如果存在冲突，则合并组 未解决则返回2
 int CMultiAgentSystem::resolve_conflicts(void) {
 
 	//为每个小组找到独立的解决方案并寻找冲突
@@ -35,7 +37,14 @@ int CMultiAgentSystem::resolve_conflicts(void) {
 		int len = groups[i].size();
 		stPoint* s_init = new stPoint[len];
 		stPoint* s_goal = new stPoint[len];
-
+		/*
+		groups 
+		智能体  1	
+				2
+				3
+				4
+		
+		*/
 		//填充组成员的初始状态和目标状态
 		for (int j = 0; j < len; j++) {
 			int agent_id = groups[i][j];
@@ -43,7 +52,7 @@ int CMultiAgentSystem::resolve_conflicts(void) {
 			s_goal[j] = agentlist[agent_id].goal;
 		}
 
-		std::cout << "starting search group size " << len << std::endl;
+		std::cout << "starting search group: "<<i<<" size: " << len << std::endl;
 		CSearch s(len, s_init, s_goal, gridmap_CGridMap, distance_CDistance, &cat[i]);
 		int result = 0;
 		do {
@@ -73,7 +82,7 @@ int CMultiAgentSystem::resolve_conflicts(void) {
 		if (g_paths) {
 			for (int j = 0; j < len; j++) {	// For ea agent in the group
 				int agent_id = groups[i][j];
-				std::cout << "   Agent: " << agent_id << "\t";
+				std::cout << "\tAgent: " << agent_id << "\t";
 				for (int k = 0; k < g_paths[j].size(); k++) {	// For ea move
 					std::cout << g_paths[j][k] << "->";
 				}
@@ -124,7 +133,7 @@ int CMultiAgentSystem::resolve_conflicts(void) {
 		}
 	}
 	if (!conflicts) {
-		time_t end_t = time(NULL);
+		clock_t end_t = clock();
 		elapse_t = difftime(end_t, start_t);
 	}
 

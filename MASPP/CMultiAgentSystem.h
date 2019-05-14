@@ -3,6 +3,7 @@ program file No.6
 
 Written by Geoganlle Goo
 **/
+
 #pragma once
 #include "CGridMap.h"
 #include "CDistance.h"
@@ -10,6 +11,12 @@ Written by Geoganlle Goo
 #include "CSearch.h"
 #include <time.h>
 #include <unordered_map>
+
+/*预处理检测路径是否存在时的开销限制
+后期可优化*为依据地图特征计算的开销估值
+*/
+constexpr auto MAX_TOUR = 100000;
+
 struct stAgent
 {
 	int id;//智能体编号
@@ -28,9 +35,22 @@ struct stMultiAgentSystem {	// 一个多智能体系统的整体信息
 	time_t	time_timet;	//解决方案总耗时
 	bool 	canbesolved_bool;//问题是否可以解决
 	stPoint	dim;	//地图尺寸
+	/*智能体数量 扩展节点的数量 冲突的数量 解决方案总开销 解决方案总耗时 问题是否可以解决 地图尺寸*/
 	stMultiAgentSystem(int na, int ne, int nc, int cost, time_t t, bool s, stPoint d) :
 		num_agents_int(na), num_expansions_int(ne), num_collisions_int(nc), system_cost_int(cost), time_timet(t), canbesolved_bool(s), dim(d) {};
 };
+
+/*预检查路径是否存在*/
+inline
+static bool chksolution(int init[], int goal[], int len, CGridMap* g) {//预检查路径是否存在
+	for (int i = 0; i < len; i += 2) {
+		CBfs bfs((stPoint*)& init[i], (stPoint*)& goal[i], g);
+		if (bfs.get_soln_cost_int() > MAX_TOUR) return false;
+		//cout << "Found path for agent" << i << endl;
+	}
+	//cout << "Checked solutions OK\n";
+	return true;
+}
 
 class CMultiAgentSystem 
 {
@@ -40,8 +60,8 @@ private:
 	int c_collisions_int;//碰撞的数量
 	int max_cost_int;
 
-	time_t	start_t;	//开始时间
-	time_t	elapse_t;	//已用总时间
+	clock_t	start_t;	//开始时间 毫秒级计算
+	clock_t	elapse_t;	//已用总时间
 
 	CDistance* distance_CDistance;
 	CGridMap* gridmap_CGridMap;
@@ -60,9 +80,10 @@ public:
 	int resolve_conflicts(void);//解决冲突
 
 	int	num_expansions(void);
-	time_t	get_time(void);
+	clock_t	get_time(void);
 	int	get_collisions(void);
 	int	cost(void);	// Solution Cost
+
 };
 
 inline
@@ -71,7 +92,7 @@ int CMultiAgentSystem::num_expansions(void) {
 }
 
 inline
-time_t CMultiAgentSystem::get_time(void) {
+clock_t CMultiAgentSystem::get_time(void) {
 	return elapse_t;
 }
 

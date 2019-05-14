@@ -2,6 +2,7 @@
 program file No.3
 配合CBfs.h优先遍历计算点之间的距离
 这个距离可以理解为广度优先遍历的深度
+Written by Geoganlle Goo
 **/
 #pragma once
 #include "CBfs.h"
